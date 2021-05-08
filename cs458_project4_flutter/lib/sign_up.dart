@@ -1,4 +1,8 @@
+import 'package:cs458_project4_flutter/login.dart';
+import 'package:cs458_project4_flutter/symtom_page.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -6,14 +10,55 @@ class SignupPage extends StatefulWidget {
 }
 
 class _State extends State<SignupPage> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  void __Sign_up__() async {
+    try {
+      var url = Uri.parse('http://localhost:8080/api/users');
+      var urlHeroku =
+          Uri.parse('http://auth-service-cloud.herokuapp.com/api/users');
+      var requestBody = {
+        "username": usernameController.text,
+        "password": passwordController.text,
+        "age": ageController.text,
+        "gender": genderController.text,
+        "email": emailController.text,
+      };
+      print(requestBody);
+
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          //"Access-Control-Allow-Origin": "*",
+          //"Access-Control-Allow-Methods":
+          //    "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+        },
+        body: json.encoder.convert(requestBody),
+      );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final res_body = jsonDecode(response.body);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp2()),
+      );
+      //print(res_body['originalURL']);
+      setState(() {});
+    } catch (e) {
+      print(e.message);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login Screen App'),
+          title: Text('Sign Up Screen'),
         ),
         body: Padding(
             padding: EdgeInsets.all(10),
@@ -23,7 +68,7 @@ class _State extends State<SignupPage> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      'URL Shortener Login',
+                      'Covid Monitoring Sign Up',
                       style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.w500,
@@ -32,10 +77,40 @@ class _State extends State<SignupPage> {
                 Container(
                   padding: EdgeInsets.all(10),
                   child: TextField(
-                    controller: nameController,
+                    controller: usernameController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'User Name',
+                      labelText: 'Username',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Email',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: ageController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Age',
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: genderController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Gender',
                     ),
                   ),
                 ),
@@ -57,27 +132,8 @@ class _State extends State<SignupPage> {
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Colors.blue,
-                      child: Text('Login'),
-                      onPressed: () {
-                        print(nameController.text);
-                        print(passwordController.text);
-                      },
-                    )),
-                Container(
-                    height: 50,
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    // ignore: deprecated_member_use
-                    child: RaisedButton(
-                      textColor: Colors.white,
-                      color: Colors.blue,
-                      child: Text('Sign In'),
-                      onPressed: () {
-                        //signup screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignupPage()),
-                        );
-                      },
+                      child: Text('Sign Up'),
+                      onPressed: __Sign_up__,
                     )),
               ],
             )));

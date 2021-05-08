@@ -114,7 +114,7 @@ class _State extends State<URLPage> {
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Colors.blue,
-                      child: Text('Sign In'),
+                      child: Text('Sign Up'),
                       onPressed: () {
                         //signup screen
                         Navigator.push(

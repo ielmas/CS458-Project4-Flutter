@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -42,17 +44,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  var symptomArr = [false, false, false, false, false, false];
+  TextEditingController feverController = TextEditingController();
+  // 0: Dry Cough, 1:  Loss of taste, 2:  Loss of smell, 3:  Sore throat, 4:  Headache, 5:  Tiredness, 6:  Fever
+  void __Send_symptoms__() async {
+    try {
+      var url = Uri.parse('http://localhost:8080/api/symptoms');
+      double fever = double.parse(feverController.text);
+      var requestBody = {
+        "dryCough": symptomArr[0],
+        "fever": fever > 38,
+        "headache": symptomArr[4],
+        "lossOfSmell": symptomArr[2],
+        "lossOfTaste": symptomArr[1],
+        "soreThroat": symptomArr[3],
+        "tiredness": symptomArr[5],
+        "userId": 9
+      };
+      print(requestBody);
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+      var response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encoder.convert(requestBody),
+      );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      final res_body = jsonDecode(response.body);
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => MonitorPage()),
+      // );
+      //print(res_body['originalURL']);
+      setState(() {});
+    } catch (e) {
+      print(e.message);
+    }
   }
 
   @override
@@ -69,41 +99,181 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: Padding(
+          padding: EdgeInsets.all(10),
+          child: ListView(children: <Widget>[
+            Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  'Choose your symptoms',
+                  style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 30),
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Dry Cough',
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
+                ),
+                Checkbox(
+                  value: symptomArr[0],
+                  onChanged: (value) {
+                    setState(() {
+                      symptomArr[0] = value;
+                    });
+                    print(symptomArr);
+                  },
+                ),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Loss of taste',
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
+                ),
+                Checkbox(
+                  value: symptomArr[1],
+                  onChanged: (value) {
+                    setState(() {
+                      symptomArr[1] = value;
+                    });
+                    print(symptomArr);
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Loss of smell',
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
+                ),
+                Checkbox(
+                  value: symptomArr[2],
+                  onChanged: (value) {
+                    setState(() {
+                      symptomArr[2] = value;
+                    });
+                    print(symptomArr);
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Sore throat',
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
+                ),
+                Checkbox(
+                  value: symptomArr[3],
+                  onChanged: (value) {
+                    setState(() {
+                      symptomArr[3] = value;
+                    });
+                    print(symptomArr);
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Headache',
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
+                ),
+                Checkbox(
+                  value: symptomArr[4],
+                  onChanged: (value) {
+                    setState(() {
+                      symptomArr[4] = value;
+                    });
+                    print(symptomArr);
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Tiredness',
+                  style: TextStyle(
+                      color: Colors.blue[900],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
+                ),
+                Checkbox(
+                  value: symptomArr[5],
+                  onChanged: (value) {
+                    setState(() {
+                      symptomArr[5] = value;
+                    });
+                    print(symptomArr);
+                  },
+                ),
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.all(10),
+              child: TextField(
+                controller: feverController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Fever',
+                ),
+              ),
+            ),
+            Container(
+                height: 50,
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                // ignore: deprecated_member_use
+                child: RaisedButton(
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  child: Text('Send symptoms'),
+                  onPressed: __Send_symptoms__,
+                )),
+            Container(
+                height: 50,
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                // ignore: deprecated_member_use
+                child: RaisedButton(
+                  textColor: Colors.white,
+                  color: Colors.blue,
+                  child: Text('See daily symptoms'),
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                    )
+                  },
+                )),
+          ])), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

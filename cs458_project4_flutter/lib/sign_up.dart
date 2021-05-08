@@ -18,8 +18,7 @@ class _State extends State<SignupPage> {
   void __Sign_up__() async {
     try {
       var url = Uri.parse('http://localhost:8080/api/users');
-      var urlHeroku =
-          Uri.parse('http://auth-service-cloud.herokuapp.com/api/users');
+
       var requestBody = {
         "username": usernameController.text,
         "password": passwordController.text,

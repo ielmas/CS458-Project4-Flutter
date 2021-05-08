@@ -8,17 +8,16 @@ void main() {
   runApp(MyApp2());
 }
 
-void _login(TextEditingController nameController, TextEditingController passwordController, BuildContext context) async {
-
+void _login(TextEditingController nameController,
+    TextEditingController passwordController, BuildContext context) async {
   final url = Uri.parse('http://localhost:8080/api/auth/login');
   Map<String, String> headers = {
-  "Content-Type": "application/json",
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD",
   };
 
-  String request_body =
-  json.encoder.convert(
+  String request_body = json.encoder.convert(
       {"username": nameController.text, "password": passwordController.text});
 
   // make POST request
@@ -102,11 +101,12 @@ class _State extends State<URLPage> {
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                     // ignore: deprecated_member_use
                     child: RaisedButton(
-                      textColor: Colors.white,
-                      color: Colors.blue,
-                      child: Text('Login'),
-                      onPressed: () {_login(nameController, passwordController, context);}
-                    )),
+                        textColor: Colors.white,
+                        color: Colors.blue,
+                        child: Text('Login'),
+                        onPressed: () {
+                          _login(nameController, passwordController, context);
+                        })),
                 Container(
                     height: 50,
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 0),

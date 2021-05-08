@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'symtom_page.dart';
 import 'sign_up.dart';
-import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp2());
@@ -92,7 +91,7 @@ class _State extends State<URLPage> {
                     child: RaisedButton(
                       textColor: Colors.white,
                       color: Colors.blue,
-                      child: Text('Sign In'),
+                      child: Text('Sign Up'),
                       onPressed: () {
                         //signup screen
                         Navigator.push(

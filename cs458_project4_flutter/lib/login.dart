@@ -1,10 +1,38 @@
 import 'package:flutter/material.dart';
 import 'symtom_page.dart';
 import 'sign_up.dart';
-import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 void main() {
   runApp(MyApp2());
+}
+
+void _login(TextEditingController nameController, TextEditingController passwordController, BuildContext context) async {
+
+  final url = Uri.parse('http://localhost:8080/api/auth/login');
+  Map<String, String> headers = {
+  "Content-Type": "application/json",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS, PUT, DELETE, HEAD",
+  };
+
+  String request_body =
+  json.encoder.convert(
+      {"username": nameController.text, "password": passwordController.text});
+
+  // make POST request
+  Response response = await post(url, headers: headers, body: request_body);
+  // check the status code for the result
+  int statusCode = response.statusCode;
+  // this API passes back the id of the new item added to the body
+  String body = response.body;
+  print(body);
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => MyApp()),
+  );
 }
 
 class MyApp2 extends StatelessWidget {
@@ -77,13 +105,7 @@ class _State extends State<URLPage> {
                       textColor: Colors.white,
                       color: Colors.blue,
                       child: Text('Login'),
-                      onPressed: () {
-                        //signup screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MyApp()),
-                        );
-                      },
+                      onPressed: () {_login(nameController, passwordController, context);}
                     )),
                 Container(
                     height: 50,

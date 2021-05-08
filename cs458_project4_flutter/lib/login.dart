@@ -30,8 +30,7 @@ void _login(TextEditingController nameController,
   if (parsed['successful']) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MyApp()),
-      //MaterialPageRoute(builder: (context) => MonitorPageStateless(userId: parsed['data']['id'])),
+      MaterialPageRoute(builder: (context) => MyApp(userId: parsed['data']['id'])),
     );
   } else {
       // set up the button

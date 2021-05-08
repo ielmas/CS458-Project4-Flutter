@@ -4,6 +4,10 @@ import 'dart:convert';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final int userId;
+
+  MyApp({Key key, this.userId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,13 +24,15 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter Demo Home Page', userId: this.userId,),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final int userId;
+
+  MyHomePage({Key key, this.title, this.userId}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -40,10 +46,14 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(userId: this.userId);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final int userId;
+
+  _MyHomePageState({this.userId});
+
   var symptomArr = [false, false, false, false, false, false];
   TextEditingController feverController = TextEditingController();
   // 0: Dry Cough, 1:  Loss of taste, 2:  Loss of smell, 3:  Sore throat, 4:  Headache, 5:  Tiredness, 6:  Fever
@@ -59,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
         "lossOfTaste": symptomArr[1],
         "soreThroat": symptomArr[3],
         "tiredness": symptomArr[5],
-        "userId": 9
+        "userId": userId
       };
       print(requestBody);
 

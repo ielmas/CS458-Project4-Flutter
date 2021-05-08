@@ -1,3 +1,4 @@
+import 'package:cs458_project4_flutter/symptom_monitor_page.dart';
 import 'package:flutter/material.dart';
 import 'symtom_page.dart';
 import 'sign_up.dart';
@@ -26,13 +27,38 @@ void _login(TextEditingController nameController, TextEditingController password
   // check the status code for the result
   int statusCode = response.statusCode;
   // this API passes back the id of the new item added to the body
-  String body = response.body;
-  print(body);
+  final Map parsed = json.decode(response.body);
+  if (parsed['successful']) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MyApp()),
+      //MaterialPageRoute(builder: (context) => MonitorPageStateless(userId: parsed['data']['id'])),
+    );
+  } else {
+      // set up the button
+      Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () { Navigator.of(context).pop(); },
+      );
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => MyApp()),
-  );
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text(parsed['errorReason']),
+        content: null,
+        actions: [
+          okButton,
+        ],
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+  }
+
 }
 
 class MyApp2 extends StatelessWidget {
@@ -60,7 +86,7 @@ class _State extends State<URLPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login Screen App'),
+          title: Text('Covid19 Monitoring App'),
         ),
         body: Padding(
             padding: EdgeInsets.all(10),
@@ -70,7 +96,7 @@ class _State extends State<URLPage> {
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(10),
                     child: Text(
-                      'URL Shortener Login',
+                      'Covid19 Monitoring App',
                       style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.w500,

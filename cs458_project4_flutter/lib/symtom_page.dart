@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:cs458_project4_flutter/symptom_monitor_page.dart';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -279,8 +280,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () => {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MyApp()),
-                    )
+                      MaterialPageRoute(builder: (context) => MonitorPageStateless(userId: this.userId))),
                   },
                 )),
           ])), // This trailing comma makes auto-formatting nicer for build methods.

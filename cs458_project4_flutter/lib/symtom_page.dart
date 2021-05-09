@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page', userId: this.userId,),
+      home: MyHomePage(
+        title: 'Flutter Demo Home Page',
+        userId: this.userId,
+      ),
     );
   }
 }
@@ -52,12 +55,56 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final int userId;
+  bool alertIsShown = false;
+  String sendStatus = "";
 
   _MyHomePageState({this.userId});
 
   var symptomArr = [false, false, false, false, false, false];
   TextEditingController feverController = TextEditingController();
   // 0: Dry Cough, 1:  Loss of taste, 2:  Loss of smell, 3:  Sore throat, 4:  Headache, 5:  Tiredness, 6:  Fever
+  void showAlert(BuildContext context) async {
+    if (alertIsShown) return;
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+
+    var url = Uri.parse(
+        'http://localhost:8080/api/symptoms/status/' + userId.toString());
+
+    var response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    final res_body = jsonDecode(response.body);
+    AlertDialog alert = AlertDialog(
+      title: Text(sendStatus + res_body["data"]),
+      content: null,
+      actions: [
+        //okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+    setState(() {
+      alertIsShown = true;
+    });
+  }
+
   void __Send_symptoms__() async {
     try {
       var url = Uri.parse('http://localhost:8080/api/symptoms');
@@ -90,20 +137,28 @@ class _MyHomePageState extends State<MyHomePage> {
       //   MaterialPageRoute(builder: (context) => MonitorPage()),
       // );
       //print(res_body['originalURL']);
-      setState(() {});
+      setState(() {
+        if (res_body["successful"]) {
+          sendStatus = "Data is sent  : ";
+        } else {
+          sendStatus = "You already sent  : ";
+        }
+        alertIsShown = false;
+      });
+      //showAlert(context);
     } catch (e) {
       print(e.message);
     }
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    WidgetsBinding.instance.addPostFrameCallback((_) => showAlert(context));
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -279,8 +334,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: Text('See daily symptoms'),
                   onPressed: () => {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MonitorPageStateless(userId: this.userId))),
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                MonitorPageStateless(userId: this.userId))),
                   },
                 )),
           ])), // This trailing comma makes auto-formatting nicer for build methods.
